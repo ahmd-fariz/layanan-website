@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import "@/styles/globals.css";
 import NextTopLoader from "nextjs-toploader";
 import "@/styles/tailwind.css";

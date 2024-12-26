@@ -16,24 +16,23 @@ export default function Login() {
   const [cookies, setCookie] = useCookies(["token"]);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false); // State untuk melacak apakah formulir sudah dikirimkan
+  const [showPassword, setShowPassword] = useState(false); // State untuk mengontrol visibilitas password
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true); // Menandai bahwa formulir sudah dikirimkan
 
     if (!email || email.includes('%') || email.includes('$')) {
         setError("Email tidak boleh mengandung karakter % atau $.");
-        // Menampilkan pesan kesalahan di dalam web
         toast.error("Email tidak boleh mengandung karakter % atau $.", {
             position: "top-right",
         });
-        return; // Jika email tidak diisi atau mengandung % atau $, jangan melanjutkan pengiriman formulir
+        return;
     }
     if (!password) {
-        // Menampilkan pesan kesalahan di dalam web
         toast.error("Password wajib diisi!", {
             position: "top-right",
         });
-        return; // Jika password tidak diisi, jangan melanjutkan pengiriman formulir
+        return;
     }
     
     try {
@@ -42,14 +41,10 @@ export default function Login() {
         password,
       });
 
-      // Simpan token JWT di dalam cookie dengan nama 'token'
       setCookie("token", response.data.token, { path: "/" });
-
-      // Redirect ke halaman admin/dashboard
       router.push("/admin/paket");
     } catch (error) {
       console.error("Login error:", error);
-      // setError("Email atau password salah.");
       showToastMessage();
     }
   };
@@ -63,88 +58,75 @@ export default function Login() {
       <Head>
         <title>Login</title>
       </Head>
-      <section className="flex flex-col items-center mx-auto md:flex-row lg:px-28">
-        <div className="hidden lg:block md:w-1/2 xl:w-2/3">
-          <Image
-            src="/images/login.svg"
-            alt=""
-            width={100}
-            height={100}
-            className="mt-10 w-96 ml-28"
-          />
-        </div>
+      <div className="font-[sans-serif] bg-gray-100">
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 items-center lg:gap-0 gap-4">
+          <div className="hidden md:block h-screen">
+            <img src="/images/rb_399.png" className="w-full h-full object-cover my-12" alt="login-image" />
+          </div>
 
-        <div className="flex items-center justify-center w-full px-6 bg-white md:max-w-md lg:max-w-full md:mx-auto md:w-1/2 xl:w-1/3 lg:px-16 xl:px-12">
-          <div className="w-full h-100">
-            <h1 className="mt-12 text-2xl font-extrabold leading-tight md:text-2xl text-transparent bg-clip-text bg-gradient-to-br from-[#1B1B1B] from-20% via-[#1D1D1D] via-20% to-[#A8CF45]">
-              Selamat Datang
-            </h1>
-            <ToastContainer />
-            <form className="mt-6" onSubmit={handleSubmit}>
-              <div>
-                <label className="block font-bold text-gray-700">Email</label>
+          <form className="lg:col-span-1 max-w-lg w-full p-6 mx-auto" onSubmit={handleSubmit}>
+            <div className="mb-12">
+              <h3 className="text-gray-800 text-4xl font-extrabold">Sign in</h3>
+              <p className="text-gray-800 text-sm mt-6">Don't have an account <a href="javascript:void(0);" className="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Register here</a></p>
+            </div>
+
+            <div>
+              <label className="text-gray-800 text-sm block mb-2">Email</label>
+              <div className="relative flex items-center">
                 <input
-                  type="email"
-                  id="email"
+                  name="email"
+                  type="text"
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 mt-2 border rounded-lg focus:border-blue-500 focus:bg-white focus:outline-none"
-                  autofocus
-                  autocomplete
+                  className="bg-transparent w-full text-sm text-gray-800 border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                  placeholder="Enter email"
                 />
+                {/* ... existing SVG icon ... */}
               </div>
-              {submitted && !email && (
-                <p className="text-sm font-semibold text-red-500">
-                  Email wajib diisi !
-                </p>
-              )}
-              <div className="mt-4">
-                <label className="block font-bold text-gray-700">
-                  Password
-                </label>
+            </div>
+
+            <div className="mt-8">
+              <label className="text-gray-800 text-sm block mb-2">Password</label>
+              <div className="relative flex items-center">
                 <input
-                  type="password"
-                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 mt-2 border rounded-lg focus:border-blue-500 focus:bg-white focus:outline-none"
+                  className="bg-transparent w-full text-sm text-gray-800 border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                  placeholder="Enter password"
                 />
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                >
+                  {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+                </button>
+                {/* ... existing SVG icon ... */}
               </div>
-              {submitted && !password && (
-                <p className="text-sm font-semibold text-red-500">
-                  Passoword wajib diisi !
-                </p>
-              )}
-              {/* <div className="mt-2 text-right">
-              <a
-                href="#"
-                className="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700"
-              >
-                Forgot Password?
-              </a>
-            </div> */}
+            </div>
 
-              <button
-                type="submit"
-                className="block w-full px-4 py-3 mt-6 font-semibold text-white rounded-lg bg-gradient-to-r from-lime-400 to-lime-600 hover:bg-indigo-400 focus:bg-indigo-400"
-              >
-                Masuk
+            <div className="flex flex-wrap items-center justify-between gap-4 mt-6">
+              <div className="flex items-center">
+                <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                <label htmlFor="remember-me" className="text-gray-800 ml-3 block text-sm">Remember me</label>
+              </div>
+              <div>
+                <a href="javascript:void(0);" className="text-blue-600 text-sm font-semibold hover:underline">Forgot Password?</a>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <button type="submit" className="w-full py-2.5 px-5 text-sm tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+                Sign in
               </button>
-            </form>
-            <hr class="my-6 border-gray-300 w-full" />
-
-            {/* <p class="mt-0">
-            Belum Punya Akun?
-            <Link
-              href={"/auth/register"}
-              class="text-blue-500 hover:text-blue-700 font-semibold ml-1"
-            >
-              Daftar
-            </Link>
-          </p> */}
-          </div>
+            </div>
+          </form>
         </div>
-      </section>
+      </div>
     </>
   );
 }
