@@ -4,6 +4,8 @@ import Link from "next/link";
 import LoadingLayanan from "./elements/LoadingLayanan";
 import styles from "./Layanan.module.css"; // Import CSS module
 import { BASE_URL } from "./layoutsAdmin/apiConfig";
+import AOS from "aos"; // Tambahkan import AOS
+import "aos/dist/aos.css"; // Tambahkan import CSS AOS
 
 export default function Paket() {
   const [paket, setPaket] = useState([]);
@@ -31,6 +33,10 @@ export default function Paket() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    AOS.init(); // Inisialisasi AOS
+  }, []);
+
   if (error) {
     return (
       <div className="text-center text-red-500">Error: {error.message}</div>
@@ -54,12 +60,12 @@ export default function Paket() {
 
   return (
     <section className="relative -mt-5 bg-transparent">
-      <div className="mt-10">
+      <div className="mt-10" data-aos="fade-up" data-aos-duration="800">
         <h1 className="font-extrabold text-3xl lg:text-3xl text-center bg-clip-text text-gray-800">
           Paket dan Harga
         </h1>
       </div>
-      <div className="relative flex flex-col items-center px-6 justify-center mx-auto mt-4">
+      <div className="relative flex flex-col items-center px-6 justify-center mx-auto mt-4" data-aos="fade-up" data-aos-duration="800">
         <span className="flex text-center text-gray-500">
           Paket ini menawarkan layanan lengkap dengan harga yang kompetitif.
           Setiap paket dirancang untuk memberikan solusi yang sesuai dengan
@@ -77,6 +83,8 @@ export default function Paket() {
               <div
                 className={`shadow-2xl rounded-2xl ${styles.paketCard} w-full`}
                 key={item.id}
+                data-aos="zoom-in"
+                data-aos-duration="800"
               >
                 <h2 className="flex justify-center font-bold h-16 py-4 bg-green-400 text-xl text-white">
                   {item["nama_paket"]}

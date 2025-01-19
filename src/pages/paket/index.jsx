@@ -4,6 +4,8 @@ import Link from "next/link";
 import LoadingLayanan from "@/components/elements/LoadingLayanan";
 import styles from "@/components/Layanan.module.css"; // Import CSS module
 import { BASE_URL } from "../../components/layoutsAdmin/apiConfig";
+import AOS from "aos"; // Tambahkan ini
+import "aos/dist/aos.css"; // Tambahkan ini
 
 export default function Layanan() {
   const [paket, setPaket] = useState([]);
@@ -29,6 +31,7 @@ export default function Layanan() {
     };
 
     fetchData();
+    AOS.init(); // Inisialisasi AOS
   }, []);
 
   if (error) {
@@ -65,7 +68,7 @@ export default function Layanan() {
     <section className="relative -mt-5 bg-transparent">
       {Object.keys(groupedByCategory).map((category) => (
         <div key={category}>
-          <h2 className="text-3xl text-center font-semibold mt-10 mb-6">
+          <h2 className="text-3xl text-center font-semibold mt-10 mb-6" data-aos="fade-up" data-aos-duration="800">
             {category}
           </h2>
           <div className="relative flex flex-col items-center px-6 py-2 justify-center lg:px-24">
@@ -74,6 +77,8 @@ export default function Layanan() {
                 <div
                   className={`shadow-2xl rounded-2xl ${styles.paketCard} w-full`}
                   key={item.id}
+                  data-aos="zoom-in"
+                  data-aos-duration="800"
                 >
                   <h2 className="flex justify-center font-bold h-16 py-4 bg-green-400 text-xl text-white">
                     {item.nama_paket}
