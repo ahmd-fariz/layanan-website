@@ -56,7 +56,6 @@ const Paket = ({ isLoggedIn }) => {
   useEffect(() => {
     fetchData(); // Pastikan fetchData dipanggil saat currentPage atau searchTerm berubah
   }, [currentPage, searchTerm]);
-   
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -173,51 +172,66 @@ const Paket = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {paket.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500"
-                        key={item.id}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.nama_paket}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                        Rp {parseFloat(item.harga).toLocaleString("id-ID")},00
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item["jumlah_pilihan_desain"]}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item["status_website"]}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item["kategoriWebsite"]["nama_kategori"]}
-                        </td>
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link href={"/admin/paket/edit?id=" + item.id}>
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                              aria-label="edit"
-                            >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
+                    {paket && paket.length > 0 ? (
+                      paket.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.nama_paket || "Paket tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            Rp{" "}
+                            {item.harga
+                              ? parseFloat(item.harga).toLocaleString("id-ID")
+                              : "0"}
+                            ,00
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item["jumlah_pilihan_desain"] || "Tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item["status_website"] || "Tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.kategoriWebsite &&
+                            item.kategoriWebsite.nama_kategori
+                              ? item.kategoriWebsite.nama_kategori
+                              : "Tidak tersedia"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            <Link href={"/admin/paket/edit?id=" + item.id}>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
 
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                            aria-label="delete"
-                          >
-                            {isDeleting ? (
-                              "Menghapus..."
-                            ) : (
-                              <i className="fa-solid fa-trash"></i>
-                            )}
-                          </button>
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              disabled={isDeleting}
+                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                              aria-label="delete"
+                            >
+                              {isDeleting ? (
+                                "Menghapus..."
+                              ) : (
+                                <i className="fa-solid fa-trash"></i>
+                              )}
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={6} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 

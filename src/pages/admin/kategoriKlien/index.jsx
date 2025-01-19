@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 
 const KategoriKlien = ({ isLoggedIn }) => {
   const [allkategoriklien, setAllKategoriKlien] = useState([]); // State untuk menyimpan semua data
@@ -32,7 +32,9 @@ const KategoriKlien = ({ isLoggedIn }) => {
 
       // Filter data berdasarkan pencarian dan pagination
       const filteredData = response.data.data.filter((item) =>
-        item.nama_kategori_klien.toLowerCase().includes(searchTerm.toLowerCase())
+        item.nama_kategori_klien
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
       );
 
       // Update data untuk ditampilkan berdasarkan pagination
@@ -56,7 +58,6 @@ const KategoriKlien = ({ isLoggedIn }) => {
   useEffect(() => {
     fetchData(); // Pastikan fetchData dipanggil saat currentPage atau searchTerm berubah
   }, [currentPage, searchTerm]);
-   
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -156,39 +157,48 @@ const KategoriKlien = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {kategoriKlien.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500 "
-                        key={item.id}
-                      >
-                        <td className="px-24 py-4 whitespace-nowrap">
-                          {item.nama_kategori_klien}
-                        </td>
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link
-                            href={"/admin/kategoriKlien/edit?id=" + item.id}
-                          >
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                              aria-label="edit"
+                    {kategoriKlien && kategoriKlien.length > 0 ? (
+                      kategoriKlien.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-24 py-4 whitespace-nowrap">
+                            {item.nama_kategori_klien ||
+                              "Kategori tidak tersedia"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            <Link
+                              href={"/admin/kategoriKlien/edit?id=" + item.id}
                             >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
 
-                          <button
-                            onClick={() => {
-                              setIsDeleting(item.id);
-                              setShowDeleteModal(true);
-                            }}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                            aria-label="delete"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
+                            <button
+                              onClick={() => {
+                                setIsDeleting(item.id);
+                                setShowDeleteModal(true);
+                              }}
+                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                              aria-label="delete"
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={2} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 

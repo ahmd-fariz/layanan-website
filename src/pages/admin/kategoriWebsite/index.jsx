@@ -5,7 +5,7 @@ import Link from "next/link";
 import Head from "next/head";
 import { ToastContainer, toast } from "react-toastify"; // Tambahkan import ini
 import "react-toastify/dist/ReactToastify.css"; // Pastikan ini ada
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 
 const KategoriWebsite = () => {
   const [allkategoriWebsite, setAllKategoriWebsite] = useState([]); // State untuk menyimpan semua data
@@ -53,7 +53,6 @@ const KategoriWebsite = () => {
   useEffect(() => {
     fetchData(); // Pastikan fetchData dipanggil saat currentPage atau searchTerm berubah
   }, [currentPage, searchTerm]);
-   
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -110,7 +109,7 @@ const KategoriWebsite = () => {
       </Head>
       <AdminLayout>
         <div className="flex items-center justify-between mb-4 lg:-mt-48 md:-mt-48">
-        <input
+          <input
             type="text"
             placeholder="Cari kategori website..."
             value={searchTerm}
@@ -148,45 +147,52 @@ const KategoriWebsite = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {kategoriWebsite.map((item, index) => (
-                      <tr
-                        className="border-b dark:border-neutral-500"
-                        key={item.id}
-                      >
-                        <td className="px-6 py-4 font-medium whitespace-nowrap">
-                          {++index}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.nama_kategori}
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.deskripsi_kategori}
-                        </td>
-
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link
-                            href={"/admin/kategoriWebsite/edit?id=" + item.id}
-                          >
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                              aria-label="edit"
+                    {kategoriWebsite && kategoriWebsite.length > 0 ? (
+                      kategoriWebsite.map((item, index) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-6 py-4 font-medium whitespace-nowrap">
+                            {++index}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.nama_kategori ||
+                              "Nama kategori tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.deskripsi_kategori ||
+                              "Deskripsi tidak tersedia"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            <Link
+                              href={"/admin/kategoriWebsite/edit?id=" + item.id}
                             >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
-
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                            aria-label="delete"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              disabled={isDeleting}
+                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                              aria-label="delete"
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 

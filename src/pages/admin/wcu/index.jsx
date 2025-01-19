@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 
 const Wcu = ({ isLoggedIn }) => {
   const [allwcu, setAllWcu] = useState([]); // State untuk menyimpan semua data
@@ -30,18 +30,20 @@ const Wcu = ({ isLoggedIn }) => {
       // Ambil semua data sekali saja
       const response = await axios.get(`${BASE_URL}/api/wcu`);
       setAllWcu(response.data.data);
-  
+
       // Filter data berdasarkan pencarian dan pagination
-      const filteredData = response.data.data.filter((item) =>
-        item.attributes.isi && item.attributes.isi.toLowerCase().includes(searchTerm.toLowerCase())
+      const filteredData = response.data.data.filter(
+        (item) =>
+          item.attributes.isi &&
+          item.attributes.isi.toLowerCase().includes(searchTerm.toLowerCase())
       );
-  
+
       // Update data untuk ditampilkan berdasarkan pagination
       const paginatedData = filteredData.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
       );
-  
+
       setWcu(paginatedData);
       setTotalCount(filteredData.length);
       setTotalPages(Math.ceil(filteredData.length / pageSize));
@@ -52,13 +54,11 @@ const Wcu = ({ isLoggedIn }) => {
       setLoading(false);
     }
   };
-  
 
   // kondisi search
   useEffect(() => {
     fetchData(); // Pastikan fetchData dipanggil saat currentPage atau searchTerm berubah
   }, [currentPage, searchTerm]);
-   
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -130,13 +130,13 @@ const Wcu = ({ isLoggedIn }) => {
         <ToastContainer />
 
         <div className="flex items-center justify-between mb-4 lg:-mt-48 md:-mt-48">
-        <input
-                  type="text"
-                  placeholder="Cari WCU..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-48 md:w-56 lg:w-72 rounded-xl border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                />
+          <input
+            type="text"
+            placeholder="Cari WCU..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-48 md:w-56 lg:w-72 rounded-xl border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+          />
           <Link
             href={"/admin/wcu/add"}
             className="flex items-center gap-1 px-4 py-2 text-white rounded-md shadow-sm bg-orange-400 hover:bg-orange-600"
@@ -161,39 +161,50 @@ const Wcu = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {wcu.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500 "
-                        key={item.id}
-                      >
-                        <td className="px-24 py-4 whitespace-nowrap">
-                          {item.attributes.isi}
-                        </td>
-                         <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link href={"/admin/wcu/edit?id=" + item.id}>
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                              aria-label="edit"
-                            >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
+                    {wcu && wcu.length > 0 ? (
+                      wcu.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-24 py-4 whitespace-nowrap">
+                            {item.attributes.isi || "Isi tidak tersedia"}
+                          </td>
 
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                            aria-label="delete"
-                          >
-                            {isDeleting ? (
-                              "Menghapus..."
-                            ) : (
-                              <i className="fa-solid fa-trash"></i>
-                            )}
-                          </button>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            {/* Tombol edit */}
+                            <Link href={"/admin/wcu/edit?id=" + item.id}>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
+
+                            {/* Tombol delete */}
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              disabled={isDeleting}
+                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                              aria-label="delete"
+                            >
+                              {isDeleting ? (
+                                "Menghapus..."
+                              ) : (
+                                <i className="fa-solid fa-trash"></i>
+                              )}
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={2} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 

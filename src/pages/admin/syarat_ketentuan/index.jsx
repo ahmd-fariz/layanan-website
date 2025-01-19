@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 const Syaratketentuan = ({ isLoggedIn }) => {
   const [allsyaratKetentuan, setAllSyaratKetentuan] = useState([]); // State untuk menyimpan semua data
   const router = useRouter();
@@ -31,7 +31,9 @@ const Syaratketentuan = ({ isLoggedIn }) => {
 
       // Filter data berdasarkan pencarian dan pagination
       const filteredData = response.data.filter((item) =>
-        item.nama_syarat_ketentuan.toLowerCase().includes(searchTerm.toLowerCase())
+        item.nama_syarat_ketentuan
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
       );
 
       // Update data untuk ditampilkan berdasarkan pagination
@@ -55,7 +57,6 @@ const Syaratketentuan = ({ isLoggedIn }) => {
   useEffect(() => {
     fetchData(); // Pastikan fetchData dipanggil saat currentPage atau searchTerm berubah
   }, [currentPage, searchTerm]);
-   
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -69,11 +70,14 @@ const Syaratketentuan = ({ isLoggedIn }) => {
 
   const deleteData = async (id) => {
     try {
-      const response = await axios.delete(`${BASE_URL}/api/syaratketentuan/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.delete(
+        `${BASE_URL}/api/syaratketentuan/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response == 200) {
         throw new Error("Gagal menghapus data");
@@ -148,37 +152,47 @@ const Syaratketentuan = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {syaratketentuan.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500"
-                        key={item.id}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.nama_syarat_ketentuan}
-                        </td>
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link
-                            href={"/admin/syarat_ketentuan/edit?id=" + item.id}
-                          >
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                              aria-label="edit"
+                    {syaratketentuan && syaratketentuan.length > 0 ? (
+                      syaratketentuan.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.nama_syarat_ketentuan ||
+                              "Nama syarat ketentuan tidak tersedia"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            <Link
+                              href={
+                                "/admin/syarat_ketentuan/edit?id=" + item.id
+                              }
                             >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
-
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                            aria-label="delete"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              disabled={isDeleting}
+                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                              aria-label="delete"
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={2} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 

@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { auto } from "@popperjs/core";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 const Pelanggan = ({ isLoggedIn }) => {
   const [allpelanggan, setAllPelanggan] = useState([]); // State untuk menyimpan semua data
   const router = useRouter();
@@ -76,7 +76,6 @@ const Pelanggan = ({ isLoggedIn }) => {
   useEffect(() => {
     fetchData(); // Pastikan fetchData dipanggil saat currentPage atau searchTerm berubah
   }, [currentPage, searchTerm]);
-   
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -102,15 +101,12 @@ const Pelanggan = ({ isLoggedIn }) => {
   const handleDelete = async () => {
     const id = itemIdToDelete;
     try {
-      const response = await fetch(
-        `${BASE_URL}/api/pelanggan/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/pelanggan/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Gagal menghapus data");
@@ -279,50 +275,57 @@ const Pelanggan = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {pelanggan.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500"
-                        key={item.id}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item["nama"]}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item["alamat"]}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item["telp"]}
-                        </td>
+                    {pelanggan && pelanggan.length > 0 ? (
+                      pelanggan.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item["nama"] || "Nama tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item["alamat"] || "Alamat tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item["telp"] || "Telepon tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item["email"] || "Email tidak tersedia"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            {/* Tombol update */}
+                            <button onClick={() => handleEdit(item)}>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </button>
 
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item["email"]}
-                        </td>
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          {/* button update */}
-                          <button onClick={() => handleEdit(item)}>
-                            <div
+                            {/* Tombol delete */}
+                            <button
+                              onClick={() => {
+                                toggleModalDelete();
+                                setItemIdToDelete(item.id);
+                                // Simpan ID item yang akan dihapus
+                              }}
                               className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                              aria-label="edit"
+                              aria-label="delete"
                             >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </button>
-
-                          {/* button delete */}
-                          <button
-                            onClick={() => {
-                              toggleModalDelete();
-                              setItemIdToDelete(item.id);
-                              // Simpan ID item yang akan dihapus
-                            }}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                            aria-label="delete"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 

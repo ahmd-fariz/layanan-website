@@ -7,7 +7,7 @@ import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 
 const ConntohDesain = ({ isLoggedIn }) => {
   const router = useRouter();
@@ -20,9 +20,7 @@ const ConntohDesain = ({ isLoggedIn }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${BASE_URL}/api/contohDesain`
-        );
+        const response = await axios.get(`${BASE_URL}/api/contohDesain`);
         setContohDesain(response.data);
       } catch (error) {
         console.error("Error fetching data contoh desain:", error);
@@ -118,54 +116,62 @@ const ConntohDesain = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {contohDesain.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500"
-                        key={item.id}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.is_gambar ? (
-                            <>
-                              <img
-                                src={item.link_contoh_desain}
-                                alt="foto"
-                                width={100}
-                              />
-                            </>
-                          ) : (
-                            <>{item.link_contoh_desain}</>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.deskripsi}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.is_gambar ? "Ya" : "Tidak"}
-                        </td>
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link
-                            href={"/admin/contoh_desain/edit?id=" + item.id}
-                          >
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
-                              aria-label="edit"
+                    {contohDesain && contohDesain.length > 0 ? (
+                      contohDesain.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.is_gambar ? (
+                              <>
+                                <img
+                                  src={item.link_contoh_desain}
+                                  alt="foto"
+                                  width={100}
+                                />
+                              </>
+                            ) : (
+                              <>{item.link_contoh_desain}</>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.deskripsi || "Tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.is_gambar ? "Ya" : "Tidak"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            <Link
+                              href={"/admin/contoh_desain/edit?id=" + item.id}
                             >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
-                          <button
-                            onClick={() => {
-                              toggleModalDelete();
-                              setIsDeleting(item.id);
-                            }}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
-                            aria-label="delete"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
+                            <button
+                              onClick={() => {
+                                toggleModalDelete();
+                                setIsDeleting(item.id);
+                              }}
+                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
+                              aria-label="delete"
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
