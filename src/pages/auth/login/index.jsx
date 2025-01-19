@@ -76,8 +76,8 @@ export default function Login() {
 
           <form className="lg:col-span-1 max-w-lg w-full p-6 mx-auto" onSubmit={handleSubmit}>
             <div className="mb-12">
-              <h3 className="text-gray-800 text-4xl font-extrabold">Sign in</h3>
-              <p className="text-gray-800 text-sm mt-6">Don't have an account <a href="javascript:void(0);" className="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Register here</a></p>
+              <h3 className="text-gray-800 text-4xl font-extrabold">Hai, Admin Silahkan Login</h3>
+              {/* <p className="text-gray-800 text-sm mt-6">Don't have an account <a href="javascript:void(0);" className="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Register here</a></p> */}
             </div>
 
             <div>
@@ -120,18 +120,18 @@ export default function Login() {
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4 mt-6">
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                 <label htmlFor="remember-me" className="text-gray-800 ml-3 block text-sm">Remember me</label>
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <a href="javascript:void(0);" className="text-blue-600 text-sm font-semibold hover:underline">Forgot Password?</a>
-              </div>
+              </div> */}
             </div>
 
             <div className="mt-8">
               <button type="submit" className="w-full py-2.5 px-5 text-sm tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
-                Sign in
+                Login
               </button>
             </div>
           </form>
