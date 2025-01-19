@@ -40,18 +40,19 @@ export default function Invoice() {
   }, []);
 
   const generateNewReference = () => {
-    const paddedNumber = String(currentReferenceNumber).padStart(3, "0");
-    const newReference = `GMT ${paddedNumber}`;
+    // Generate random alphanumeric string of length 3
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let randomRef = "";
+    for (let i = 0; i < 6; i++) {
+      randomRef += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+
+    const newReference = `GMT ${randomRef}`;
 
     // Update data invoice
     setInvoiceData((prevData) => ({ ...prevData, refrensi: newReference }));
-
-    // Update nomor referensi berikutnya
-    const newReferenceNumber = currentReferenceNumber + 1;
-    setCurrentReferenceNumber(newReferenceNumber);
-
-    // Simpan nomor referensi ke localStorage
-    localStorage.setItem("currentReferenceNumber", newReferenceNumber);
   };
 
   const fetchSettingData = async () => {
@@ -119,23 +120,28 @@ export default function Invoice() {
   };
 
   const calculateTotals = () => {
-    const subtotal = cartPaketData.reduce(
-      (sum, item) => sum + (item.harga || 0),
-      0
-    );
+    // Hitung subtotal dari semua paket
+    const subtotal = cartPaketData.reduce((sum, item) => {
+      const harga = parseFloat(item.harga) || 0;
+      return sum + harga;
+    }, 0);
 
-    const totalDiskon = cartPaketData.reduce(
-      (sum, item) => sum + ((item.harga || 0) * (item.diskon || 0)) / 100,
-      0
-    );
+    // Hitung total diskon
+    const totalDiskon = cartPaketData.reduce((sum, item) => {
+      const harga = parseFloat(item.harga) || 0;
+      const diskon = parseFloat(item.diskon) || 0;
+      const diskonAmount = (harga * diskon) / 100;
+      return sum + diskonAmount;
+    }, 0);
 
+    // Hitung total akhir
     const total = subtotal - totalDiskon;
 
     setInvoiceData((prevData) => ({
       ...prevData,
-      subtotal,
-      total_diskon: totalDiskon,
-      total,
+      subtotal: Number(subtotal.toFixed(2)),
+      total_diskon: Number(totalDiskon.toFixed(2)),
+      total: Number(total.toFixed(2)),
     }));
   };
 
@@ -174,7 +180,7 @@ export default function Invoice() {
         },
       });
 
-     // console.log("Invoice and cart packages saved:", invoiceResponse.data);
+      // console.log("Invoice and cart packages saved:", invoiceResponse.data);
       showToastMessage("Invoice berhasil disimpan");
 
       // Increment the reference number for the next invoice
