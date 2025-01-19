@@ -57,6 +57,16 @@ export default function Login() {
     <>
       <Head>
         <title>Login</title>
+        <style>{`
+          body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Menghilangkan scroll */
+          }
+          .font-[sans-serif] {
+            height: 100%; /* Memastikan elemen utama memenuhi tinggi layar */
+          }
+        `}</style>
       </Head>
       <div className="font-[sans-serif] bg-gray-100">
         <div className="grid md:grid-cols-2 lg:grid-cols-2 items-center lg:gap-0 gap-4">
