@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 
 const Keterangan = ({ isLoggedIn }) => {
   const [allKeterangan, setAllKeterangan] = useState([]); // State untuk menyimpan semua data
@@ -21,6 +21,8 @@ const Keterangan = ({ isLoggedIn }) => {
   const [pageSize, setPageSize] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // Tambahkan state untuk modal delete
+  const [itemToDelete, setItemToDelete] = useState(null); // Tambahkan state untuk menyimpan item yang akan dihapus
 
   const fetchData = async () => {
     setLoading(true);
@@ -55,33 +57,39 @@ const Keterangan = ({ isLoggedIn }) => {
   useEffect(() => {
     fetchData(); // Pastikan fetchData dipanggil saat currentPage atau searchTerm berubah
   }, [currentPage, searchTerm]);
-   
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1); // Reset ke halaman pertama saat pencarian dilakukan
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
+    setItemToDelete(id); // Simpan id yang akan dihapus
+    toggleModalDelete(); // Tampilkan modal konfirmasi
+  };
+
+  const toggleModalDelete = () => {
+    setShowDeleteModal(!showDeleteModal);
+  };
+
+  const handleDeleteItem = async () => {
     setIsDeleting(true);
-    const confirmDelete = window.confirm(
-      "Apakah Anda yakin ingin menghapus item ini?"
-    );
-    if (!confirmDelete) {
-      setIsDeleting(false);
-      return;
-    }
     try {
-      const response = await axios.delete(`${BASE_URL}/api/keterangan/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.delete(
+        `${BASE_URL}/api/keterangan/${itemToDelete}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.status != 200) {
         throw new Error("Gagal menghapus data");
       }
-      fetchData()
+
+      setKeterangan(keterangan.filter((item) => item.id !== itemToDelete));
+      fetchData();
       showToastMessage();
     } catch (error) {
       console.error("Terjadi kesalahan:", error);
@@ -122,13 +130,13 @@ const Keterangan = ({ isLoggedIn }) => {
         <ToastContainer />
 
         <div className="flex items-center justify-between mb-4 lg:-mt-48 md:-mt-48">
-        <input
-                  type="text"
-                  placeholder="Cari Keterangan..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-48 md:w-56 lg:w-72 rounded-xl border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                />
+          <input
+            type="text"
+            placeholder="Cari Keterangan..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-48 md:w-56 lg:w-72 rounded-xl border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+          />
           <Link
             href={"/admin/keterangan/add"}
             className="flex items-center gap-1 px-4 py-2 text-white rounded-md shadow-sm bg-orange-400"
@@ -150,86 +158,53 @@ const Keterangan = ({ isLoggedIn }) => {
                       <th scope="col" className="px-14 py-4">
                         Action
                       </th>
-                      {/* <th scope="col" className="px-6 py-4">
-                        Jumlah Pilihan Desain
-                      </th>
-                      <th scope="col" className="px-6 py-4">
-                        Status Website
-                      </th>
-                      <th scope="col" className="px-6 py-4">
-                        Id Kategori Website 
-                      </th>
-                      <th scope="col" className="px-6 py-4">
-                        Action
-                      </th> */}
                     </tr>
                   </thead>
                   <tbody>
-                    {keterangan.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500 "
-                        key={item.id}
-                      >
-                        <td className="px-24 py-4 whitespace-nowrap">
-                          {item.attributes.isi}
-                        </td>
-                        {/* <td className="px-6 py-4 whitespace-nowrap">
-                          {item.attributes.jumlah_pilihan_desain}
-                        </td>     
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.attributes.status_website}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.attributes.kategori_Website_Id}
-                        </td>
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link href={"/admin/paket/edit?id=" + item.id}>
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
-                              aria-label="edit"
-                            >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
+                    {keterangan && keterangan.length > 0 ? (
+                      keterangan.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-24 py-4 whitespace-nowrap">
+                            {item.attributes.isi || "Isi tidak tersedia"}
+                          </td>
 
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
-                            aria-label="delete"
-                          >
-                            {isDeleting ? (
-                              "Menghapus..."
-                            ) : (
-                              <i className="fa-solid fa-trash"></i>
-                            )}
-                          </button>
-                        </td> */}
-                         <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link href={"/admin/keterangan/edit?id=" + item.id}>
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
-                              aria-label="edit"
-                            >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            {/* Tombol edit */}
+                            <Link href={"/admin/keterangan/edit?id=" + item.id}>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
 
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
-                            aria-label="delete"
-                          >
-                            {isDeleting ? (
-                              "Menghapus..."
-                            ) : (
-                              <i className="fa-solid fa-trash"></i>
-                            )}
-                          </button>
+                            {/* Tombol delete */}
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              disabled={isDeleting}
+                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                              aria-label="delete"
+                            >
+                              {isDeleting ? (
+                                "Menghapus..."
+                              ) : (
+                                <i className="fa-solid fa-trash"></i>
+                              )}
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={2} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 
@@ -279,6 +254,40 @@ const Keterangan = ({ isLoggedIn }) => {
           </div>
         </div>
       </AdminLayout>
+      {/* Modal konfirmasi delete */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 transition-opacity">
+            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+          </div>
+          <div className="relative w-full max-w-md transition transform bg-white rounded-lg shadow-xl">
+            <div className="px-4 py-5 sm:px-6">
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                Hapus Item
+              </h3>
+              <p className="max-w-2xl mt-1 text-sm text-gray-500">
+                Apakah Anda yakin ingin menghapus item ini?
+              </p>
+            </div>
+            <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <button
+                type="button"
+                onClick={handleDeleteItem} // Panggil handleDeleteItem
+                className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-500 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Hapus
+              </button>
+              <button
+                type="button"
+                onClick={toggleModalDelete} // Tutup modal
+                className="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

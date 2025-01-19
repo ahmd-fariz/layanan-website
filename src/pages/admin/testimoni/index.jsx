@@ -152,66 +152,67 @@ const Testimoni = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {testimoni.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500"
-                        key={item.id}
-                      >
-                        {/* <td className="px-6 py-4 font-medium whitespace-nowrap">
-                          {item.id}
-                        </td> */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.jenis_testimoni}
-                        </td>
-
-                        <td className="py-4 whitespace-nowrap">
-                          <img
-                            src={item.url_gambar}
-                            alt={item.gambar_testimoni}
-                            className="object-scale-down w-24 h-24 rounded-2xl"
-                          />
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.judul_testimoni}
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.deskripsi_testimoni}
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.is_publish ? "Ya" : "Tidak"}
-                        </td>
-
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link href={"/admin/testimoni/edit?id=" + item.id}>
-                            <div
+                    {testimoni && testimoni.length > 0 ? (
+                      testimoni.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.jenis_testimoni || "Tidak tersedia"}
+                          </td>
+                          <td className="py-4 whitespace-nowrap">
+                            {item.url_gambar ? (
+                              <img
+                                src={item.url_gambar}
+                                alt={
+                                  item.gambar_testimoni ||
+                                  "Gambar tidak tersedia"
+                                }
+                                className="object-scale-down w-24 h-24 rounded-2xl"
+                              />
+                            ) : (
+                              "Gambar tidak tersedia"
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.judul_testimoni || "Tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.deskripsi_testimoni || "Tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.is_publish ? "Ya" : "Tidak"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            <Link href={"/admin/testimoni/edit?id=" + item.id}>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 md:mb-0 hover:bg-orange-800"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
+                            <button
+                              onClick={() => {
+                                toggleModalDelete();
+                                setIsDeleting(item.id);
+                              }}
                               className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 md:mb-0 hover:bg-orange-800"
-                              aria-label="edit"
+                              aria-label="delete"
                             >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
-
-                          <button
-                            onClick={() => {
-                              toggleModalDelete();
-                              setIsDeleting(item.id);
-                              // Simpan ID item yang akan dihapus
-                            }}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 md:mb-0 hover:bg-orange-800"
-                            aria-label="delete"
-                          >
-                            {/* {isDeleting ? (
-                              "Menghapus..."
-                            ) : ( */}
-                            <i className="fa-solid fa-trash"></i>
-                            {/* )} */}
-                          </button>
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={6} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
                 {/* pagination */}

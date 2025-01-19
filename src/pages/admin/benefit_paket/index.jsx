@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 
 const BenefitPaket = ({ isLoggedIn }) => {
   const [allBenefit, setAllBenefit] = useState([]); // State untuk menyimpan semua data
@@ -52,12 +52,10 @@ const BenefitPaket = ({ isLoggedIn }) => {
     }
   };
 
-
   // kondisi search
   useEffect(() => {
     fetchData(); // Pastikan fetchData dipanggil saat currentPage atau searchTerm berubah
   }, [currentPage, searchTerm]);
-   
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -71,9 +69,7 @@ const BenefitPaket = ({ isLoggedIn }) => {
 
   const handleConfirmDelete = async () => {
     try {
-      await axios.delete(
-        `${BASE_URL}/api/benefitpaket/${isDeleting}`
-      ); // Hapus data
+      await axios.delete(`${BASE_URL}/api/benefitpaket/${isDeleting}`); // Hapus data
       setBenefitPaket(benefitPaket.filter((item) => item.id !== isDeleting)); // Hapus dari state
       showToastMessage(); // Tampilkan pesan sukses
     } catch (error) {
@@ -122,7 +118,7 @@ const BenefitPaket = ({ isLoggedIn }) => {
         <ToastContainer />
 
         <div className="flex items-center justify-between mb-4 lg:-mt-48 md:-mt-48">
-        <input
+          <input
             type="text"
             placeholder="Cari benefit paket..."
             value={searchTerm}
@@ -156,40 +152,49 @@ const BenefitPaket = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {benefitPaket.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500 "
-                        key={item.id}
-                      >
-                        <td className="px-24 py-4 whitespace-nowrap">
-                          {item.nama_benefit}
-                        </td>
-                        <td className="px-24 py-4 whitespace-nowrap">
-                          {item.paket.nama_paket}
-                        </td>
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link
-                            href={"/admin/benefit_paket/edit?id=" + item.id}
-                          >
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                              aria-label="edit"
+                    {benefitPaket && benefitPaket.length > 0 ? (
+                      benefitPaket.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-24 py-4 whitespace-nowrap">
+                            {item.nama_benefit}
+                          </td>
+                          <td className="px-24 py-4 whitespace-nowrap">
+                            {item.paket?.nama_paket ||
+                              "Data paket tidak tersedia"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            <Link
+                              href={"/admin/benefit_paket/edit?id=" + item.id}
                             >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
 
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                            aria-label="delete"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              disabled={isDeleting}
+                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                              aria-label="delete"
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 

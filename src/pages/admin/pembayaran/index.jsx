@@ -7,7 +7,7 @@ import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
 import { ToastContainer, toast } from "react-toastify"; // Tambahkan import ini
 import "react-toastify/dist/ReactToastify.css"; // Pastikan ini ada
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 
 const Pembayaran = ({ isLoggedIn }) => {
   const router = useRouter();
@@ -27,9 +27,7 @@ const Pembayaran = ({ isLoggedIn }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/api/bank/`
-      );
+      const response = await axios.get(`${BASE_URL}/api/bank/`);
       //console.log(response.data)
       setBank(response.data.data);
       setTotalPages(response.data.data.totalPages);
@@ -48,15 +46,12 @@ const Pembayaran = ({ isLoggedIn }) => {
   const handleDelete = async () => {
     const id = isDeleting;
     try {
-      const response = await fetch(
-        `${BASE_URL}/api/bank/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/bank/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Gagal menghapus data");
@@ -114,20 +109,9 @@ const Pembayaran = ({ isLoggedIn }) => {
           <div className=" sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
               <div className="overflow-x-auto">
-                {/* search */}
-                {/* <input
-                  type="text"
-                  placeholder="Cari bank..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-48 md:w-56 lg:w-72   rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                /> */}
                 <table className="min-w-full text-sm font-light text-left">
                   <thead className="font-medium border-b dark:border-neutral-500">
                     <tr>
-                      {/* <th scope="col" className="px-6 py-4">
-                        #
-                      </th> */}
                       <th scope="col" className="px-6 py-4">
                         Nama Rekening
                       </th>
@@ -148,64 +132,61 @@ const Pembayaran = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {bank.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500"
-                        key={item.id}
-                      >
-                        {/* <td className="px-6 py-4 font-medium whitespace-nowrap">
-                          {item.id}
-                        </td> */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.nama_rek}
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.no_rek}
-                        </td>
-
-                        <td className="py-4 whitespace-nowrap">
-                          <img
-                            src={item.url_image_bank}
-                            alt={item.image_bank}
-                            className="object-scale-down w-24 h-24 rounded-2xl"
-                          />
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.atas_nama}
-                        </td>
-                        {/* <td className="px-6 py-4 whitespace-nowrap">
-                            {item.attributes['url-image-bank']}
-                          </td> */}
-
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link href={"/admin/pembayaran/edit?id=" + item.id}>
-                            <div
+                    {bank && bank.length > 0 ? (
+                      bank.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.nama_rek || "Tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.no_rek || "Tidak tersedia"}
+                          </td>
+                          <td className="py-4 whitespace-nowrap">
+                            {item.url_image_bank ? (
+                              <img
+                                src={item.url_image_bank}
+                                alt={item.image_bank || "Gambar tidak tersedia"}
+                                className="object-scale-down w-24 h-24 rounded-2xl"
+                              />
+                            ) : (
+                              "Gambar tidak tersedia"
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.atas_nama || "Tidak tersedia"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            <Link href={"/admin/pembayaran/edit?id=" + item.id}>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
+                            <button
+                              onClick={() => {
+                                toggleModalDelete();
+                                setIsDeleting(item.id);
+                              }}
                               className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
-                              aria-label="edit"
+                              aria-label="delete"
                             >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
-
-                          <button
-                            onClick={() => {
-                              toggleModalDelete();
-                              setIsDeleting(item.id);
-                              // Simpan ID item yang akan dihapus
-                            }}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400"
-                            aria-label="delete"
-                          >
-                            {/* {isDeleting ? (
-                              "Menghapus..."
-                            ) : ( */}
                               <i className="fa-solid fa-trash"></i>
-                            {/* )} */}
-                          </button>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
                 {/* pagination */}
@@ -250,8 +231,8 @@ const Pembayaran = ({ isLoggedIn }) => {
             </div>
           </div>
         </div>
-          {/* Modal delete */}
-          {showDeleteModal && (
+        {/* Modal delete */}
+        {showDeleteModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="fixed inset-0 transition-opacity">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>

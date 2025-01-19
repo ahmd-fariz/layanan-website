@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 
 const Klien = ({ isLoggedIn }) => {
   const [allKlien, setAllKlien] = useState([]); // State untuk menyimpan semua data
@@ -55,7 +55,6 @@ const Klien = ({ isLoggedIn }) => {
   useEffect(() => {
     fetchData(); // Pastikan fetchData dipanggil saat currentPage atau searchTerm berubah
   }, [currentPage, searchTerm]);
-   
 
   const handleSearchInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -72,14 +71,11 @@ const Klien = ({ isLoggedIn }) => {
       return;
     }
     try {
-      const response = await axios.delete(
-        `${BASE_URL}/api/klien/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.delete(`${BASE_URL}/api/klien/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.status != 200) {
         throw new Error("Gagal menghapus data");
@@ -87,7 +83,7 @@ const Klien = ({ isLoggedIn }) => {
 
       fetchData();
       showToastMessage();
-    } catch (error) { 
+    } catch (error) {
       console.error("Terjadi kesalahan:", error);
     } finally {
       setIsDeleting(false);
@@ -126,7 +122,7 @@ const Klien = ({ isLoggedIn }) => {
         <ToastContainer />
 
         <div className="flex items-center justify-between mb-4 lg:-mt-48 md:-mt-48">
-        <input
+          <input
             type="text"
             placeholder="Cari klien..."
             value={searchTerm}
@@ -172,54 +168,68 @@ const Klien = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {klien.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500 "
-                        key={item.id}
-                      >
-                        <td className="px-4 py-4 whitespace-nowrap">
-                          {item.paket.nama_paket}
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap">
-                          {item.nama_klien}
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap">
-                          {item.kategori_klien.nama_kategori_klien}
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap">
-                          {item.url_klien}
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap">
-                          <img
-                            src={item.logo_klien}
-                            alt="Foto"
-                            className="object-scale-down w-24 h-24 rounded-2xl"
-                          />
-                        </td>
-                        <td className="px-4 py-4 whitespace-nowrap">
-                          {item.is_headline ? "Ya" : "Tidak"}
-                        </td>
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          <Link href={"/admin/klien/edit?id=" + item.id}>
-                            <div
-                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-700"
-                              aria-label="edit"
-                            >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </Link>
+                    {klien && klien.length > 0 ? (
+                      klien.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            {item.paket?.nama_paket ||
+                              "Data paket tidak tersedia"}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            {item.nama_klien || "Nama klien tidak tersedia"}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            {item.kategori_klien?.nama_kategori_klien ||
+                              "Kategori tidak tersedia"}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            {item.url_klien || "URL tidak tersedia"}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            {item.logo_klien ? (
+                              <img
+                                src={item.logo_klien}
+                                alt="Logo"
+                                className="object-scale-down w-24 h-24 rounded-2xl"
+                              />
+                            ) : (
+                              "Logo tidak tersedia"
+                            )}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            {item.is_headline ? "Ya" : "Tidak"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            <Link href={"/admin/klien/edit?id=" + item.id}>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-700"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </Link>
 
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-700"
-                            aria-label="delete"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              disabled={isDeleting}
+                              className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-700"
+                              aria-label="delete"
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={7} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 

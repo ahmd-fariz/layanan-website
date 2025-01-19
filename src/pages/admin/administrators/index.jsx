@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { auto } from "@popperjs/core";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
-import { BASE_URL } from '../../../components/layoutsAdmin/apiConfig';
+import { BASE_URL } from "../../../components/layoutsAdmin/apiConfig";
 
 const Administrators = ({ isLoggedIn }) => {
   const router = useRouter();
@@ -107,15 +107,12 @@ const Administrators = ({ isLoggedIn }) => {
   const handleDelete = async () => {
     const id = itemIdToDelete;
     try {
-      const response = await fetch(
-        `${BASE_URL}/api/administrators/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/administrators/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Gagal menghapus data");
@@ -158,16 +155,13 @@ const Administrators = ({ isLoggedIn }) => {
         phone: formData.phone,
       };
 
-      const response = await fetch(
-        `${BASE_URL}/api/administrators`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formDataToSend),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/administrators`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formDataToSend),
+      });
 
       if (response.ok) {
         showToastMessage("Data berhasil ditambahkan!");
@@ -250,13 +244,13 @@ const Administrators = ({ isLoggedIn }) => {
         <ToastContainer />
 
         <div className="flex items-center justify-between mb-4 lg:-mt-48 md:-mt-48">
-        <input
-                  type="text"
-                  placeholder="Cari administrators..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-48 md:w-56 lg:w-72 rounded-xl border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                />
+          <input
+            type="text"
+            placeholder="Cari administrators..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-48 md:w-56 lg:w-72 rounded-xl border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+          />
           <button
             onClick={toggleModal}
             className="flex items-center gap-1 px-4 py-2 text-white rounded-md shadow-sm bg-orange-400 hover:bg-orange-600"
@@ -292,54 +286,63 @@ const Administrators = ({ isLoggedIn }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {administrators.map((item) => (
-                      <tr
-                        className="border-b dark:border-neutral-500"
-                        key={item.id}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.attributes.name}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.attributes.username}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.attributes.email}
-                        </td>
+                    {administrators && administrators.length > 0 ? (
+                      administrators.map((item) => (
+                        <tr
+                          className="border-b dark:border-neutral-500"
+                          key={item.id}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.attributes.name || "Nama tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.attributes.username ||
+                              "Username tidak tersedia"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.attributes.email || "Email tidak tersedia"}
+                          </td>
 
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.attributes.phone}
-                        </td>
-                        <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
-                          {/* button update */}
-                          <button onClick={() => handleEdit(item)}>
-                            <div
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.attributes.phone ||
+                              "Nomor telepon tidak tersedia"}
+                          </td>
+                          <td className="flex items-center gap-1 px-6 py-4 mt-8 whitespace-nowrap">
+                            {/* Button Edit */}
+                            <button onClick={() => handleEdit(item)}>
+                              <div
+                                className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
+                                aria-label="edit"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </div>
+                            </button>
+
+                            {/* Button Delete */}
+                            <button
+                              onClick={() => {
+                                toggleModalDelete();
+                                setItemIdToDelete(item.id);
+                              }}
                               className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                              aria-label="edit"
+                              aria-label="delete"
                             >
-                              <i className="fa-solid fa-pen"></i>
-                            </div>
-                          </button>
-
-                          {/* button delete */}
-                          <button
-                            onClick={() => {
-                              toggleModalDelete();
-                              setItemIdToDelete(item.id);
-                              // Simpan ID item yang akan dihapus
-                            }}
-                            className="items-center w-auto px-5 py-2 mb-2 tracking-wider text-white rounded-full shadow-sm bg-orange-400 hover:bg-orange-600"
-                            aria-label="delete"
-                          >
-                            {isDeleting ? (
-                              "Menghapus..."
-                            ) : (
-                              <i className="fa-solid fa-trash"></i>
-                            )}
-                          </button>
+                              {isDeleting ? (
+                                "Menghapus..."
+                              ) : (
+                                <i className="fa-solid fa-trash"></i>
+                              )}
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="text-center py-4">
+                          Data tidak tersedia
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 
