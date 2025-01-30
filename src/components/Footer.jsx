@@ -73,10 +73,10 @@ export default function Footer() {
                 <nav className="flex flex-col mt-4 space-y-2 text-sm text-white">
                   <p className="hover:opacity-75">
                     {" "}
-                    Alamat : {setting.alamat}{" "}
+                    Alamat : 
                   </p>
-                  <p className="hover:opacity-75"> Email: {setting.email} </p>
-                  <p className="hover:opacity-75"> Telp : 0{setting.telp} </p>
+                  <p className="hover:opacity-75"> Email:  </p>
+                  <p className="hover:opacity-75"> Telp :  </p>
                   <Link href={"/syarat_ketentuan"}>
                     <p className="mt-4 ">Syarat & Ketentuan</p>
                   </Link>

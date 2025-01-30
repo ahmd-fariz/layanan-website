@@ -8,7 +8,7 @@ class MyDocument extends Document {
             defer / >
             <
             link rel = "icon"
-            href = "/images/logo.png" / >
+            href = "/images/neper.png" / >
             <
             /Head>  <
             body >
@@ -17,8 +17,8 @@ class MyDocument extends Document {
             <
             NextScript / >
             <
-            /body>  <
-            /Html>
+            /body>  < /
+            Html >
         );
     }
 }

@@ -24,9 +24,9 @@ export default function App({ Component, pageProps, router }) {
         <
         Head >
         <
-        title > GMT SOFT DEVELOPMENT < /title>{" "} <
+        title > SISFO Jurnal PKL < /title>{" "} <
         meta name = "description"
-        content = "Jasa Pembuatan Website" / >
+        content = "Sistem Informasi Jurnal PKL SMKN 1 KOTA CIREBON" / >
         <
         /Head>{" "} <
         NextTopLoader color = "#A8CF45" / >
